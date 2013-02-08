@@ -69,10 +69,10 @@
 
 #ifdef DEBUG
 #define MAX_RUNAWAY_TIME 10 // sec
-#define MAX_PCALL_TIME  5000000 // usec
+#define MAX_PCALL_TIME  50000000 // usec
 #else
 #define MAX_RUNAWAY_TIME 1 // sec
-#define MAX_PCALL_TIME  500000 // usec
+#define MAX_PCALL_TIME  50000000 // usec
 #endif
 
 #define NO_GL_PUSHPOP -1
@@ -621,8 +621,13 @@ static int luaGlScale(lua_State *L) {
     return 0;
 }
 
+double startupTime = 0;
+__attribute__ ((constructor)) static void setStartupTime(void) {
+    startupTime = glfwGetTime();
+}
+
 static int luaNow(lua_State *L) {
-    lua_pushnumber(L, now);
+    lua_pushnumber(L, glfwGetTime()-startupTime);
     return 1;
 }
 
